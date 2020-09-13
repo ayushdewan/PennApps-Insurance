@@ -6,12 +6,21 @@ import json
 import os
 
 import flask
+import pymysql.cursors
 
 from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
 import google_auth
+
+# Connect to the database
+connection = pymysql.connect(host='35.238.255.61',
+                             user='root',
+                             password='claimcart',
+                             db='claims',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
 
 app = flask.Flask(__name__)
 app.secret_key = "secret"
@@ -30,11 +39,26 @@ def getEmail():
     
 @app.route('/list')
 def list():
-    return render_template("dashboard.html")
+    with connection.cursor() as cursor:
+        # Read a single record
+        sql = "SELECT `*` FROM `items` WHERE `user`=%s"
+        cursor.execute(sql, (getEmail(),))
+        result = cursor.fetchall()
+        for i in result:
+            i['price'] = "$%0.2f" % i['price']
+    return render_template("dashboard.html", table=result)
 
 @app.route('/family')
 def family():
-    return render_template("family.html")
+    with connection.cursor() as cursor:
+        # Read a single record
+        sql = "SELECT `*` FROM `items`"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        for i in result:
+            i['price'] = "$%0.2f" % i['price']
+    return render_template("dashboard.html", table=result)
+
 
 @app.route('/upload')
 def upload():
