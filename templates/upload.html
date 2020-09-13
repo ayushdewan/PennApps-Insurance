@@ -1,15 +1,30 @@
 {% extends 'layout.html'%}
 
 {% block body %}
-<div class="jumbotron text-center" style="padding: 2% 1%; background-color: white;">
+<style>
+    form {
+        display: block;
+        margin: auto;
+    }
+
+    #selectedFiles img {
+            width: 125px;
+            height: 125px;
+            margin-bottom: 2%;
+    }
+
+</style>
+<div class="jumbotron text-center" style="padding: 4% 1%; background-color: white;">
     <form id="myForm" method="post" enctype="multipart/form-data">
-
-        Files: <input type="file" id="files" name="files" multiple accept="image/*"><br/>
-
-        <div id="selectedFiles"></div>
-
-        <input type="submit">
+        <h1 style="font-size: 30px;">Upload</h1> 
+        <input type="file" id="files" name="files" multiple accept="image/*" style="margin: auto; padding: 2% 0 2% 4%">
+        <div class="container" id="selectedFiles" style="padding: 1% 0 2%; display: block; text-align: center; background-color: white; font-size: 0;"></div>
+        <input type="text" placeholder="Enter location" name="location" required>
+        <br><br>
     </form>
+
+    <button onclick="window.location.href='/list'" style="background-color: #297A4C; color: #FCEBDA; width: 100px; height: 30px; border: 0;">SUBMIT</button>
+
 </div>
 <script>
 	
@@ -38,7 +53,8 @@
 			var reader = new FileReader();
 			reader.onload = function (e) {
 				var html = "<img src=\"" + e.target.result + "\">" + f.name + "<br clear=\"left\"/>";
-				selDiv.innerHTML += html;				
+                selDiv.innerHTML += html;
+                				
 			}
 			reader.readAsDataURL(f); 
 			
@@ -46,6 +62,9 @@
 		
 		
     }
+
+    
+
 </script>
 
 {% endblock %}
